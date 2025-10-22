@@ -92,7 +92,7 @@ impl CarHeader {
         map.insert("version".to_string(), Ipld::Integer(self.version as i128));
         map.insert(
             "roots".to_string(),
-            Ipld::List(self.roots.iter().map(|cid| Ipld::Link(cid.clone())).collect()),
+            Ipld::List(self.roots.iter().map(|cid| Ipld::Link(*cid)).collect()),
         );
         Ipld::Map(map)
     }
@@ -113,7 +113,7 @@ impl CarHeader {
             let mut roots = Vec::new();
             for root_ipld in roots_ipld {
                 if let Ipld::Link(cid) = root_ipld {
-                    roots.push(cid.clone());
+                    roots.push(*cid);
                 } else {
                     return Err(CarError::InvalidHeader("Root is not a CID".to_string()));
                 }

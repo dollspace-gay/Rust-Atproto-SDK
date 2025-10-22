@@ -7,7 +7,7 @@
 //! - Facet management
 
 pub mod detection;
-pub mod rich_text;
+pub mod text;
 pub mod sanitization;
 pub mod unicode;
 pub mod util;
@@ -22,7 +22,7 @@ pub use util::{MENTION_REGEX, URL_REGEX, TRAILING_PUNCTUATION_REGEX, TAG_REGEX};
 pub use detection::{Facet, FacetFeature, ByteSlice, detect_facets};
 
 // Re-export RichText types
-pub use rich_text::{RichText, RichTextSegment};
+pub use text::{RichText, RichTextSegment};
 
 // Re-export sanitization
 pub use sanitization::{sanitize_rich_text, SanitizeOptions};

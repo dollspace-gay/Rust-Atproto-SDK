@@ -203,7 +203,7 @@ impl DidResolver {
     }
 
     /// Create a resolver with the default PLC directory
-    pub fn default() -> Self {
+    pub fn with_default_plc() -> Self {
         Self::new("https://plc.directory".to_string())
     }
 

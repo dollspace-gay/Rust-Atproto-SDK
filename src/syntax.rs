@@ -211,14 +211,6 @@ impl AtUri {
         self.rkey.as_deref()
     }
 
-    /// Converts to a string representation
-    pub fn to_string(&self) -> String {
-        if let Some(ref rkey) = self.rkey {
-            format!("at://{}/{}/{}", self.hostname, self.collection, rkey)
-        } else {
-            format!("at://{}/{}", self.hostname, self.collection)
-        }
-    }
 
     /// Validates a hostname (DID or handle)
     fn is_valid_hostname(hostname: &str) -> bool {
@@ -290,7 +282,11 @@ impl AtUri {
 
 impl fmt::Display for AtUri {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", self.to_string())
+        if let Some(ref rkey) = self.rkey {
+            write!(f, "at://{}/{}/{}", self.hostname, self.collection, rkey)
+        } else {
+            write!(f, "at://{}/{}", self.hostname, self.collection)
+        }
     }
 }
 

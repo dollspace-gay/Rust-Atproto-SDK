@@ -79,9 +79,9 @@ impl MstEntry {
     fn to_ipld(&self) -> Ipld {
         let mut map = BTreeMap::new();
         map.insert("k".to_string(), Ipld::String(self.key.clone()));
-        map.insert("v".to_string(), Ipld::Link(self.value_cid.clone()));
+        map.insert("v".to_string(), Ipld::Link(self.value_cid));
         if let Some(ref tree_cid) = self.tree_cid {
-            map.insert("t".to_string(), Ipld::Link(tree_cid.clone()));
+            map.insert("t".to_string(), Ipld::Link(*tree_cid));
         }
         Ipld::Map(map)
     }
@@ -95,12 +95,12 @@ impl MstEntry {
             };
 
             let value_cid = match map.get("v") {
-                Some(Ipld::Link(cid)) => cid.clone(),
+                Some(Ipld::Link(cid)) => *cid,
                 _ => return Err(MstError::InvalidNode("Missing or invalid value CID in entry".to_string())),
             };
 
             let tree_cid = match map.get("t") {
-                Some(Ipld::Link(cid)) => Some(cid.clone()),
+                Some(Ipld::Link(cid)) => Some(*cid),
                 None => None,
                 _ => return Err(MstError::InvalidNode("Invalid tree CID in entry".to_string())),
             };
@@ -313,7 +313,7 @@ impl Mst {
     /// Store a node and return its CID
     pub fn put_node(&mut self, node: MstNode) -> Result<Cid> {
         let cid = node.to_cid()?;
-        self.nodes.insert(cid.clone(), node);
+        self.nodes.insert(cid, node);
         Ok(cid)
     }
 
@@ -330,7 +330,7 @@ impl Mst {
             .map_err(|e| MstError::Cid(format!("Failed to create multihash: {}", e)))?;
 
         let cid = Cid::new_v1(0x71, multihash); // dag-cbor codec
-        self.leaves.insert(cid.clone(), value);
+        self.leaves.insert(cid, value);
         Ok(cid)
     }
 
@@ -353,7 +353,7 @@ impl Mst {
         let value_cid = self.put_leaf(value)?;
 
         // Insert into the tree structure
-        let new_root = self.insert_into_node(self.root.clone(), &key, value_cid.clone())?;
+        let new_root = self.insert_into_node(self.root.clone(), &key, value_cid)?;
         self.root = new_root;
 
         Ok(value_cid)

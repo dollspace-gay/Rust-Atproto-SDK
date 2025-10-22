@@ -6,7 +6,7 @@
 use lazy_static::lazy_static;
 use regex::Regex;
 
-use super::rich_text::RichText;
+use super::text::RichText;
 
 lazy_static! {
     /// Regex for matching excessive spacing/newlines

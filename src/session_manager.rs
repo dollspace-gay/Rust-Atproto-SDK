@@ -494,7 +494,7 @@ impl PersistentSessionManager {
     /// Returns the path to the session file for a given DID
     fn session_file_path(&self, did: &str) -> PathBuf {
         // Sanitize DID for filename (replace : and / with _)
-        let safe_did = did.replace(':', "_").replace('/', "_");
+        let safe_did = did.replace([':', '/'], "_");
         self.session_dir.join(format!("{}.json", safe_did))
     }
 

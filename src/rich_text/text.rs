@@ -101,7 +101,7 @@ impl RichText {
     pub fn new(text: String, facets: Option<Vec<Facet>>) -> Self {
         let unicode_text = UnicodeString::new(text);
         let facets = facets.map(|mut f| {
-            f.retain(|facet| facet_filter(facet));
+            f.retain(facet_filter);
             f.sort_by(facet_sort);
             f
         });

@@ -89,7 +89,9 @@ impl Tid {
     /// # Errors
     ///
     /// Returns an error if the string is not a valid TID.
-    pub fn from_str(s: &str) -> Result<Self, TidError> {
+    ///
+    /// Note: Use `s.parse::<Tid>()` or the `FromStr` trait for idiomatic parsing.
+    fn parse_tid(s: &str) -> Result<Self, TidError> {
         if s.len() != TID_LEN {
             return Err(TidError::InvalidLength(s.len()));
         }
@@ -106,7 +108,7 @@ impl Tid {
 
     /// Check if a string is a valid TID
     pub fn is_valid(s: &str) -> bool {
-        Self::from_str(s).is_ok()
+        s.parse::<Tid>().is_ok()
     }
 
     /// Generate the next TID
@@ -244,7 +246,7 @@ impl std::str::FromStr for Tid {
     type Err = TidError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        Tid::from_str(s)
+        Tid::parse_tid(s)
     }
 }
 

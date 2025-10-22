@@ -15,17 +15,20 @@ pub enum LabelPreference {
     Hide,
 }
 
-impl LabelPreference {
-    /// Parse from string
-    pub fn from_str(s: &str) -> Option<Self> {
+impl std::str::FromStr for LabelPreference {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "ignore" => Some(Self::Ignore),
-            "warn" => Some(Self::Warn),
-            "hide" => Some(Self::Hide),
-            _ => None,
+            "ignore" => Ok(Self::Ignore),
+            "warn" => Ok(Self::Warn),
+            "hide" => Ok(Self::Hide),
+            _ => Err(format!("Invalid label preference: {}", s)),
         }
     }
+}
 
+impl LabelPreference {
     /// Convert to string
     pub fn as_str(&self) -> &'static str {
         match self {
@@ -183,7 +186,7 @@ pub const HIDE_BEHAVIOR: ModerationBehavior = ModerationBehavior {
 };
 
 /// Moderation preferences for a user
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct ModerationPrefs {
     /// Whether adult content is enabled
     pub adult_content_enabled: bool,
@@ -201,17 +204,6 @@ pub struct ModerationPrefs {
     pub hidden_posts: Vec<String>,
 }
 
-impl Default for ModerationPrefs {
-    fn default() -> Self {
-        Self {
-            adult_content_enabled: false,
-            labels: HashMap::new(),
-            labelers: Vec::new(),
-            muted_words: Vec::new(),
-            hidden_posts: Vec::new(),
-        }
-    }
-}
 
 /// Per-labeler preferences
 #[derive(Debug, Clone, Serialize, Deserialize)]

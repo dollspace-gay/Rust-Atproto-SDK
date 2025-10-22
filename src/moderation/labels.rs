@@ -42,7 +42,7 @@ impl KnownLabelValue {
     }
 
     /// Parse from string identifier
-    pub fn from_str(s: &str) -> Option<Self> {
+    pub fn parse(s: &str) -> Option<Self> {
         match s {
             "!hide" => Some(Self::Hide),
             "!warn" => Some(Self::Warn),

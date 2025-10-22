@@ -260,7 +260,7 @@ pub fn apply_label(
     labeler_did: Option<&str>,
 ) -> Option<ModerationCause> {
     // Get the label definition
-    let label_def = if let Some(known) = KnownLabelValue::from_str(label_val) {
+    let label_def = if let Some(known) = KnownLabelValue::parse(label_val) {
         get_label_definition(known)
     } else {
         // Unknown/custom label - skip for now

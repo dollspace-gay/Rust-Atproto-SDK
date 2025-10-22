@@ -118,10 +118,10 @@ impl UnsignedCommit {
         let mut map = BTreeMap::new();
         map.insert("did".to_string(), Ipld::String(self.did.clone()));
         map.insert("version".to_string(), Ipld::Integer(self.version as i128));
-        map.insert("data".to_string(), Ipld::Link(self.data.clone()));
+        map.insert("data".to_string(), Ipld::Link(self.data));
         map.insert("rev".to_string(), Ipld::String(self.rev.clone()));
         if let Some(ref prev) = self.prev {
-            map.insert("prev".to_string(), Ipld::Link(prev.clone()));
+            map.insert("prev".to_string(), Ipld::Link(*prev));
         } else {
             map.insert("prev".to_string(), Ipld::Null);
         }
@@ -159,10 +159,10 @@ impl SignedCommit {
         let mut map = BTreeMap::new();
         map.insert("did".to_string(), Ipld::String(self.commit.did.clone()));
         map.insert("version".to_string(), Ipld::Integer(self.commit.version as i128));
-        map.insert("data".to_string(), Ipld::Link(self.commit.data.clone()));
+        map.insert("data".to_string(), Ipld::Link(self.commit.data));
         map.insert("rev".to_string(), Ipld::String(self.commit.rev.clone()));
         if let Some(ref prev) = self.commit.prev {
-            map.insert("prev".to_string(), Ipld::Link(prev.clone()));
+            map.insert("prev".to_string(), Ipld::Link(*prev));
         } else {
             map.insert("prev".to_string(), Ipld::Null);
         }
@@ -360,7 +360,7 @@ impl Repository {
             version: REPO_VERSION,
             data: data_cid,
             rev: new_rev.to_string(),
-            prev: self.head.clone(),
+            prev: self.head,
         };
 
         // Calculate signing hash
@@ -379,8 +379,8 @@ impl Repository {
         let commit_cid = signed_commit.to_cid()?;
 
         // Store commit
-        self.commits.insert(commit_cid.clone(), signed_commit);
-        self.head = Some(commit_cid.clone());
+        self.commits.insert(commit_cid, signed_commit);
+        self.head = Some(commit_cid);
         self.current_rev = Some(new_rev);
 
         Ok(commit_cid)
@@ -401,7 +401,7 @@ impl Repository {
 
         // Add head commit as root
         if let Some(head_cid) = &self.head {
-            writer.add_root(head_cid.clone())
+            writer.add_root(*head_cid)
                 .map_err(|e| RepoError::Car(e.to_string()))?;
 
             // Write head commit
@@ -411,7 +411,7 @@ impl Repository {
                     .map_err(|e| RepoError::Car(e.to_string()))?;
 
                 // Write MST root
-                let mst_root_cid = commit.commit.data.clone();
+                let mst_root_cid = commit.commit.data;
                 let mst_root_bytes = self.mst.root_cid()?.to_string().into_bytes(); // Placeholder
                 writer.write_block(&mst_root_cid, &mst_root_bytes)
                     .map_err(|e| RepoError::Car(e.to_string()))?;

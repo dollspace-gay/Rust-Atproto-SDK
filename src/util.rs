@@ -59,8 +59,7 @@ pub fn sanitize_muted_word_value(value: &str) -> String {
 
     // Remove leading hashtag unless followed by emoji variation selector (U+FE0F)
     // Since Rust regex doesn't support lookahead, we check manually
-    let without_hash = if trimmed.starts_with('#') {
-        let after_hash = &trimmed[1..];
+    let without_hash = if let Some(after_hash) = trimmed.strip_prefix('#') {
         // Don't remove # if followed by U+FE0F (emoji variation selector)
         if after_hash.starts_with('\u{FE0F}') {
             trimmed

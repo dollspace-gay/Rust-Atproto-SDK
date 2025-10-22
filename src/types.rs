@@ -179,10 +179,6 @@ impl AtprotoProxy {
         Ok(AtprotoProxy { did, service })
     }
 
-    /// Formats the proxy as a string
-    pub fn to_string(&self) -> String {
-        format!("{}#{}", self.did, self.service)
-    }
 }
 
 impl fmt::Display for AtprotoProxy {

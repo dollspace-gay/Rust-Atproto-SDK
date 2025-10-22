@@ -449,13 +449,19 @@ impl TokenManager {
     }
 }
 
+/// Session data: (did, expiry)
+type SessionData = (String, DateTime<Utc>);
+
+/// Session map type
+type SessionMap = HashMap<String, SessionData>;
+
 /// Session storage (in-memory)
 ///
 /// In production, this should be backed by a database or Redis.
 #[derive(Clone)]
 pub struct SessionStore {
     /// Sessions by access token
-    sessions: Arc<RwLock<HashMap<String, (String, DateTime<Utc>)>>>, // token -> (did, expiry)
+    sessions: Arc<RwLock<SessionMap>>, // token -> (did, expiry)
 }
 
 impl SessionStore {
