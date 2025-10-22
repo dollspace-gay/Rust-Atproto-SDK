@@ -3389,19 +3389,18 @@ impl Agent {
             // Find existing preference for this feed
             let mut found = false;
             for pref in &mut prefs {
-                if pref.get("$type").and_then(|v| v.as_str()) == Some("app.bsky.actor.defs#feedViewPref") {
-                    if pref.get("feed").and_then(|v| v.as_str()) == Some(feed) {
-                        // Merge preferences
-                        if let Some(obj) = pref.as_object_mut() {
-                            if let Some(new_prefs) = feed_prefs.as_object() {
-                                for (key, value) in new_prefs {
-                                    obj.insert(key.clone(), value.clone());
-                                }
+                if pref.get("$type").and_then(|v| v.as_str()) == Some("app.bsky.actor.defs#feedViewPref")
+                    && pref.get("feed").and_then(|v| v.as_str()) == Some(feed) {
+                    // Merge preferences
+                    if let Some(obj) = pref.as_object_mut() {
+                        if let Some(new_prefs) = feed_prefs.as_object() {
+                            for (key, value) in new_prefs {
+                                obj.insert(key.clone(), value.clone());
                             }
                         }
-                        found = true;
-                        break;
                     }
+                    found = true;
+                    break;
                 }
             }
 
